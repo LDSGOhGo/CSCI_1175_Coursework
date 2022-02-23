@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ExerciseController">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="600.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Operation">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Calculate" onAction="#onCalculateClick"/>
+                  <MenuItem mnemonicParsing="false" text="Exit" fx:id="exit" onAction="#onExitClick"/>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox layoutY="25.0" prefHeight="375.0" prefWidth="600.0">
+         <children>
+            <HBox prefHeight="85.0" prefWidth="600.0">
+               <children>
+                  <Label prefHeight="81.0" prefWidth="171.0" text="Investment Amount: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField maxWidth="-Infinity" prefHeight="25.0" prefWidth="305.0" alignment="CENTER_RIGHT" fx:id="investment">
+                     <HBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="87.0" prefWidth="600.0">
+               <children>
+                  <Label prefHeight="81.0" prefWidth="171.0" text="Number Of Years: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField maxWidth="-Infinity" prefHeight="25.0" prefWidth="305.0" alignment="CENTER_RIGHT" fx:id="years">
+                     <HBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="87.0" prefWidth="600.0">
+               <children>
+                  <Label prefHeight="81.0" prefWidth="171.0" text="Annual Interest Rate: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField maxWidth="-Infinity" prefHeight="25.0" prefWidth="305.0" alignment="CENTER_RIGHT" fx:id="annual">
+                     <HBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="87.0" prefWidth="600.0">
+               <children>
+                  <Label prefHeight="81.0" prefWidth="171.0" text="Future value: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField editable="false" maxWidth="-Infinity" prefHeight="25.0" prefWidth="305.0" alignment="CENTER_RIGHT" fx:id="future">
+                     <HBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" text="Calculate" textAlignment="CENTER" fx:id="calculate" onAction="#onCalculateClick">
+               <VBox.margin>
+                  <Insets left="530.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</Pane>
