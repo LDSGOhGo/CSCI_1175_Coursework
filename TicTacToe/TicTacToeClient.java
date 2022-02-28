@@ -17,12 +17,6 @@ public class TicTacToeClient extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         
-        try {
-            Socket socket = new Socket("localhost", 8000);
-        }
-        catch(IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
 

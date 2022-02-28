@@ -12,23 +12,10 @@ public class TicTacToeServer extends Application {
 private TextArea chatbox;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("TicTacToe.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("TicTacToeServer.fxml"));
         primaryStage.setTitle("TicTacToe Server");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        
-        new Thread(() -> {
-        try {
-            ServerSocket serverSocket = new ServerSocket(8000);
-            Platform.runLater(() -> {
-                chatbox.appendText("Server started at " + new Date() + "\n");
-            });
-            Socket socket = serverSocket.accept();
-        }
-        catch(IOException ex) {
-            ex.printStackTrace();
-        }
-        }).start();
     }
 
 
