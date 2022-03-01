@@ -18,28 +18,121 @@ import javafx.scene.paint.Color;
 
 public class TicTacToeController {
 	@FXML
-	private TextArea chatbox, message;
-	@FXML
 	private Button connect;
 	@FXML
-	private TextField name;
-	DataInputStream inputFromClient, fromServer;
-	DataOutputStream outputToClient, toServer;
+	GridPane gridPane;
+	@FXML
+	Pane zero, one, two, three, four, five, six, seven, eight;
+	DataInputStream fromServer;
+	DataOutputStream toServer;
+	int turn;
+	int tile;
+	Boolean[] isFilled = new Boolean[9];
+	
+	protected int getTile(MouseEvent event) {
+		Pane pane = (Pane) event.getTarget();
+		int column, row;
+		if(gridPane.getColumnIndex(pane) == null) {
+			column = 0;
+		} else {
+			column = gridPane.getColumnIndex(pane);
+		}
+		if(gridPane.getRowIndex(pane) == null) {
+			row = 0;
+		} else {
+			row = gridPane.getRowIndex(pane);
+		}
+		switch(column) {
+			case 0:
+			switch(row) {
+				case 0:
+					return 0;
+				case 1:
+					return 3;
+				case 2:
+					return 6;
+			}
+			break;
+			case 1:
+			switch(row) {
+				case 0:
+					return 1;
+				case 1:
+					return 4;
+				case 2:
+					return 7;
+			}
+			break;
+			case 2:
+			switch(row) {
+				case 0:
+					return 2;
+				case 1:
+					return 5;
+				case 2:
+					return 8;
+			}
+			break;
+		}
+		return 9;
+	}
+	
+	protected void lastMove(int tile) {
+		Pane pane;
+		switch(tile) {
+			case 0:
+				pane = zero;
+				break;
+			case 1:
+				pane = one;
+				break;
+			case 2:
+				pane = two;
+				break;
+			case 3:
+				pane = three;
+				break;
+			case 4:
+				pane = four;
+				break;
+			case 5:
+				pane = five;
+				break;
+			case 6:
+				pane = six;
+				break;
+			case 7:
+				pane = seven;
+				break;
+			case 8:
+				pane = eight;
+				break;
+			default:
+				return;
+		}
+		Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
+		one.endXProperty().bind(pane.widthProperty().subtract(10));
+		one.endYProperty().bind(pane.heightProperty().subtract(10));
+		Line two = new Line(10, pane.getHeight() - 10, pane.getWidth() - 10, 10);
+		two.startYProperty().bind(pane.heightProperty().subtract(10));
+		two.endXProperty().bind(pane.widthProperty().subtract(10));
+		pane.getChildren().addAll(one, two);
+	}
 	
 	@FXML 
-	protected void serverTurn(MouseEvent event) {
+	protected void checkTurn(MouseEvent event) {
+		if(turn == 0) {
+			return;
+		}
+		else if(turn == 2) {
 			Pane pane = (Pane) event.getTarget();
-			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
-			one.endXProperty().bind(pane.widthProperty().subtract(10));
-			one.endYProperty().bind(pane.heightProperty().subtract(10));
-			Line two = new Line(10, pane.getHeight() - 10, pane.getWidth() - 10, 10);
-			two.startYProperty().bind(pane.heightProperty().subtract(10));
-			two.endXProperty().bind(pane.widthProperty().subtract(10));
-			pane.getChildren().addAll(one, two);
-	}
-	@FXML 
-	protected void clientTurn(MouseEvent event) {
-			Pane pane = (Pane) event.getTarget();
+			System.out.println("Tile placed by server: " + tile);
+			isFilled[tile] = true;
+			lastMove(tile);
+			tile = getTile(event);
+			if(isFilled[tile]) {
+				return;
+			}
 			Ellipse circle = new Ellipse(pane.getWidth() / 2 - 10, pane.getHeight() / 2 - 10);
 			circle.centerXProperty().bind(pane.widthProperty().divide(2));
 			circle.centerYProperty().bind(pane.heightProperty().divide(2));
@@ -48,97 +141,39 @@ public class TicTacToeController {
 			circle.setStroke(Color.RED);
 			circle.setFill(Color.TRANSPARENT);
 			pane.getChildren().addAll(circle);
-	}
-	
-	@FXML 
-	protected void serverConnectButton(MouseEvent event) {
-		new Thread(() -> {
+			turn--;
 			try {
-				ServerSocket serverSocket = new ServerSocket(8000);
-				Platform.runLater(() -> {
-					chatbox.appendText("Server started at " + new Date() + '\n');
-				});
-				connect.setVisible(false);
-				Socket socket = serverSocket.accept();
-				inputFromClient = new DataInputStream(socket.getInputStream());
-				outputToClient = new DataOutputStream(socket.getOutputStream());
-				while(true) {
-					chatbox.appendText(inputFromClient.readUTF());
-				}
+				toServer.writeInt(turn);
+				toServer.writeInt(turn);
 			}
 			catch(IOException ex) {
-				ex.printStackTrace();
+				System.out.println(ex.toString());
 			}
-		}).start();
+		}
+		else {
+			return;
+		}
 	}
 	@FXML 
 	protected void connectButton(MouseEvent event) {
 		new Thread(() -> {
 		try {
 			Socket socket = new Socket("localhost", 8000);
-			chatbox.appendText("Connected To Server \n");
 			fromServer = new DataInputStream(socket.getInputStream());
 			toServer = new DataOutputStream(socket.getOutputStream());
 			connect.setVisible(false);
+			turn = 0;
+			System.out.println("Connected to server");
 			while(true) {
-				chatbox.appendText(fromServer.readUTF());
+				turn = fromServer.readInt();
+				tile = fromServer.readInt();
 			}
 		}
 		catch(IOException ex) {
-			chatbox.appendText("Failed To Connect To Server \n");
-			chatbox.appendText(ex.toString() + '\n');
+			System.out.println("Failed to connect to server");
+			System.out.println(ex.toString());
 		}
 		}).start();
-	}
-	@FXML
-	protected void serverSendButton(MouseEvent event) {
-		try {
-			String[] lines = message.getText().split(System.lineSeparator());
-			outputToClient.writeUTF(name.getText() + ": " + lines[lines.length - 1] + "\n");
-			chatbox.appendText(name.getText() + ": " + lines[lines.length - 1] + "\n");
-			message.clear();
-		}
-		catch(IOException ex) {
-			chatbox.appendText(ex.toString() + "\n");
-		}
-	}
-	@FXML
-	protected void serverEnterKey(KeyEvent event) {
-		try {
-			if(event.getCode().equals(KeyCode.ENTER)) {
-				String[] lines = message.getText().split(System.lineSeparator());
-				outputToClient.writeUTF(name.getText() + ": " + lines[lines.length - 1] + "\n");
-				chatbox.appendText(name.getText() + ": " + lines[lines.length - 1] + "\n");
-				message.clear();
-			}
-		}
-		catch(IOException ex) {
-			chatbox.appendText(ex.toString() + "\n");
-		}
-	}
-	@FXML protected void sendButton(MouseEvent event) {
-		try {
-			String[] lines = message.getText().split(System.lineSeparator());
-			toServer.writeUTF(name.getText() + ": " + lines[lines.length - 1] + "\n");
-			chatbox.appendText(name.getText() + ": " + lines[lines.length - 1] + "\n");
-			message.clear();
-		}
-		catch(IOException ex) {
-			chatbox.appendText(ex.toString());
-		}
-	}
-	@FXML protected void enterKey(KeyEvent event) {
-		try {
-			if(event.getCode().equals(KeyCode.ENTER)) {
-				String[] lines = message.getText().split(System.lineSeparator());
-				toServer.writeUTF(name.getText() + ": " + lines[lines.length - 1] + "\n");
-				chatbox.appendText(name.getText() + ": " + lines[lines.length - 1] + "\n");
-				message.clear();
-			}
-		}
-		catch(IOException ex) {
-			chatbox.appendText(ex.toString());
-		}
 	}
 	
 }
