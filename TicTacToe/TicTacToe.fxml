@@ -18,17 +18,17 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" fx:id="zero"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" fx:id="one"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" fx:id="two"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.rowIndex="1" fx:id="three"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="four">
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" fx:id="zero"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" fx:id="one"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" fx:id="two"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.rowIndex="1" fx:id="three"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="four">
          <children>
             <Button fx:id="connect" layoutX="68.0" layoutY="54.0" mnemonicParsing="false" onMouseClicked="#connectButton" text="Connect" />
          </children></Pane>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" GridPane.rowIndex="1" fx:id="five"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.rowIndex="2" fx:id="six"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="seven"/>
-      <Pane onMouseClicked="#checkTurn" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="eight"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" GridPane.rowIndex="1" fx:id="five"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.rowIndex="2" fx:id="six"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="seven"/>
+      <Pane onMouseClicked="#onClick" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="2" GridPane.rowIndex="2" fx:id="eight"/>
    </children>
 </GridPane>

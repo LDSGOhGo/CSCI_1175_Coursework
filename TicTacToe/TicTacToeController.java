@@ -27,7 +27,7 @@ public class TicTacToeController {
 	DataOutputStream toServer;
 	int turn;
 	int tile;
-	Boolean[] isFilled = new Boolean[9];
+	Boolean[] isFilled = {false, false, false, false, false, false, false, false, false};
 	
 	protected int getTile(MouseEvent event) {
 		Pane pane = (Pane) event.getTarget();
@@ -118,21 +118,53 @@ public class TicTacToeController {
 		two.endXProperty().bind(pane.widthProperty().subtract(10));
 		pane.getChildren().addAll(one, two);
 	}
-	
+	@FXML
+	protected void onClick(MouseEvent event) {
+		if(isFilled[getTile(event)]) {
+			return;
+		}
+		if(turn != 2) {
+			return;
+		}
+		isFilled[tile] = true;
+		Pane pane = (Pane) event.getTarget();
+		tile = getTile(event);
+		Ellipse circle = new Ellipse(pane.getWidth() / 2 - 10, pane.getHeight() / 2 - 10);
+		circle.centerXProperty().bind(pane.widthProperty().divide(2));
+		circle.centerYProperty().bind(pane.heightProperty().divide(2));
+		circle.radiusXProperty().bind(pane.widthProperty().divide(2).subtract(30));
+		circle.radiusYProperty().bind(pane.heightProperty().divide(2).subtract(10));
+		circle.setStroke(Color.RED);
+		circle.setFill(Color.TRANSPARENT);
+		pane.getChildren().addAll(circle);
+		turn--;
+		isFilled[tile] = true;
+		try {
+			toServer.writeInt(turn);
+			toServer.writeInt(tile);
+		}
+		catch(IOException ex) {
+			System.out.println(ex.toString());
+		}
+	}
 	@FXML 
 	protected void checkTurn(MouseEvent event) {
 		if(turn == 0) {
 			return;
 		}
 		else if(turn == 2) {
+			for(int i = 0; i < isFilled.length; i++) {
+				System.out.print(isFilled[i] + " ");
+			}
 			Pane pane = (Pane) event.getTarget();
 			System.out.println("Tile placed by server: " + tile);
 			isFilled[tile] = true;
 			lastMove(tile);
-			tile = getTile(event);
-			if(isFilled[tile]) {
+			if(isFilled[getTile(event)]) {
+				System.out.println(getTile(event) + " is filled");
 				return;
 			}
+			tile = getTile(event);
 			Ellipse circle = new Ellipse(pane.getWidth() / 2 - 10, pane.getHeight() / 2 - 10);
 			circle.centerXProperty().bind(pane.widthProperty().divide(2));
 			circle.centerYProperty().bind(pane.heightProperty().divide(2));
@@ -167,6 +199,9 @@ public class TicTacToeController {
 			while(true) {
 				turn = fromServer.readInt();
 				tile = fromServer.readInt();
+				Platform.runLater(() -> {
+					lastMove(tile);
+				});
 			}
 		}
 		catch(IOException ex) {
