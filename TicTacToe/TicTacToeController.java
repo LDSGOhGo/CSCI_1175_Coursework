@@ -22,6 +22,8 @@ public class TicTacToeController {
 	@FXML
 	GridPane gridPane;
 	@FXML
+	Label draw;
+	@FXML
 	Pane zero, one, two, three, four, five, six, seven, eight;
 	DataInputStream fromServer;
 	DataOutputStream toServer;
@@ -77,6 +79,26 @@ public class TicTacToeController {
 		return 9;
 	}
 	
+	protected void isDraw() {
+		for(int i = 0; i < isFilled.length; i++) {
+			System.out.print(isFilled[i] + " ");
+		}
+		System.out.println();
+		for(int i = 0; i < isFilled.length; i++) {
+			if(!isFilled[i]) {
+				return;
+			}
+		}
+		Pane[] panes = {zero, one, two, three, five, six, seven, eight};
+		for(int i = 0; i < panes.length; i++) {
+			panes[i].setVisible(false);
+		}
+		four.getChildren().clear();
+		four.setStyle(null);
+		four.getChildren().add(draw);
+		draw.setVisible(true);
+	}
+	
 	protected void lastMove(int tile) {
 		Pane pane;
 		switch(tile) {
@@ -117,6 +139,8 @@ public class TicTacToeController {
 		two.startYProperty().bind(pane.heightProperty().subtract(10));
 		two.endXProperty().bind(pane.widthProperty().subtract(10));
 		pane.getChildren().addAll(one, two);
+		isFilled[tile] = true;
+		isDraw();
 	}
 	@FXML
 	protected void onClick(MouseEvent event) {
@@ -145,45 +169,6 @@ public class TicTacToeController {
 		}
 		catch(IOException ex) {
 			System.out.println(ex.toString());
-		}
-	}
-	@FXML 
-	protected void checkTurn(MouseEvent event) {
-		if(turn == 0) {
-			return;
-		}
-		else if(turn == 2) {
-			for(int i = 0; i < isFilled.length; i++) {
-				System.out.print(isFilled[i] + " ");
-			}
-			Pane pane = (Pane) event.getTarget();
-			System.out.println("Tile placed by server: " + tile);
-			isFilled[tile] = true;
-			lastMove(tile);
-			if(isFilled[getTile(event)]) {
-				System.out.println(getTile(event) + " is filled");
-				return;
-			}
-			tile = getTile(event);
-			Ellipse circle = new Ellipse(pane.getWidth() / 2 - 10, pane.getHeight() / 2 - 10);
-			circle.centerXProperty().bind(pane.widthProperty().divide(2));
-			circle.centerYProperty().bind(pane.heightProperty().divide(2));
-			circle.radiusXProperty().bind(pane.widthProperty().divide(2).subtract(30));
-			circle.radiusYProperty().bind(pane.heightProperty().divide(2).subtract(10));
-			circle.setStroke(Color.RED);
-			circle.setFill(Color.TRANSPARENT);
-			pane.getChildren().addAll(circle);
-			turn--;
-			try {
-				toServer.writeInt(turn);
-				toServer.writeInt(turn);
-			}
-			catch(IOException ex) {
-				System.out.println(ex.toString());
-			}
-		}
-		else {
-			return;
 		}
 	}
 	@FXML 

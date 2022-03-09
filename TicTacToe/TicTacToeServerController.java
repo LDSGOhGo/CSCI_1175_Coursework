@@ -30,6 +30,7 @@ public class TicTacToeServerController {
 	int turn;
 	int tile;
 	Boolean[] isFilled = {false, false, false, false, false, false, false, false, false};
+	char[][] board = new char[3][3];
 	
 	protected void isDraw() {
 		for(int i = 0; i < isFilled.length; i++) {
@@ -37,11 +38,81 @@ public class TicTacToeServerController {
 				return;
 			}
 		}
-		Pane[] panes = {zero, one, two, three, four, five, six, seven, eight};
+		Pane[] panes = {zero, one, two, three, five, six, seven, eight};
 		for(int i = 0; i < panes.length; i++) {
 			panes[i].setVisible(false);
 		}
+		four.getChildren().clear();
+		four.setStyle(null);
+		four.getChildren().add(draw);
 		draw.setVisible(true);
+	}
+	protected void isWon() {
+		
+	}
+	protected void fillBoard(boolean turn, int tile) {
+		if(turn) {
+			switch(tile) {
+				case 0:
+				board[0][0] = 'x';
+				break;
+				case 1:
+				board[0][1] = 'x';
+				break;
+				case 2:
+				board[0][2] = 'x';
+				break;
+				case 3:
+				board[1][0] = 'x';
+				break;
+				case 4:
+				board[1][1] = 'x';
+				break;
+				case 5:
+				board[1][2] = 'x';
+				break;
+				case 6:
+				board[2][0] = 'x';
+				break;
+				case 7:
+				board[2][1] = 'x';
+				break;
+				case 8:
+				board[2][2] = 'x';
+				break;
+			}
+		}
+		else {
+			switch(tile) {
+				case 0:
+				board[0][0] = 'o';
+				break;
+				case 1:
+				board[0][1] = 'o';
+				break;
+				case 2:
+				board[0][2] = 'o';
+				break;
+				case 3:
+				board[1][0] = 'o';
+				break;
+				case 4:
+				board[1][1] = 'o';
+				break;
+				case 5:
+				board[1][2] = 'o';
+				break;
+				case 6:
+				board[2][0] = 'o';
+				break;
+				case 7:
+				board[2][1] = 'o';
+				break;
+				case 8:
+				board[2][2] = 'o';
+				break;
+			}
+		}
 	}
 	protected int getTile(MouseEvent event) {
 		Pane pane = (Pane) event.getTarget();
@@ -133,6 +204,8 @@ public class TicTacToeServerController {
 		circle.setStroke(Color.RED);
 		circle.setFill(Color.TRANSPARENT);
 		pane.getChildren().addAll(circle);
+		isFilled[tile] = true;
+		isDraw();
 	}
 	@FXML
 	protected void onClick(MouseEvent event) {
@@ -140,13 +213,14 @@ public class TicTacToeServerController {
 			System.out.print(isFilled[i] + " ");
 		}
 		System.out.println();
+		System.out.println(isFilled[getTile(event)]);
+		System.out.println(getTile(event));
 		if(isFilled[getTile(event)]) {
 			return;
 		}
 		if(turn == 2) {
 			return;
 		} else if(turn == 0) {
-			isFilled[tile] = true;
 			Pane pane = (Pane) event.getTarget();
 			tile = getTile(event);
 			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
@@ -160,7 +234,7 @@ public class TicTacToeServerController {
 			turn += 2;
 		}
 		else {
-			isFilled[tile] = true;
+			System.out.println(isFilled[getTile(event)]);
 			Pane pane = (Pane) event.getTarget();
 			tile = getTile(event);
 			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
@@ -172,6 +246,7 @@ public class TicTacToeServerController {
 			pane.getChildren().addAll(one, two);
 			isFilled[tile] = true;
 			turn++;
+			isDraw();
 		}
 		try {
 			outputToClient.writeInt(turn);
@@ -179,58 +254,6 @@ public class TicTacToeServerController {
 		}
 		catch(IOException ex) {
 			System.out.println(ex.toString());
-		}
-	}
-	@FXML
-	protected void checkTurn(MouseEvent event) {
-		if(turn == 0) {
-			Pane pane = (Pane) event.getTarget();
-			tile = getTile(event);
-			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
-			one.endXProperty().bind(pane.widthProperty().subtract(10));
-			one.endYProperty().bind(pane.heightProperty().subtract(10));
-			Line two = new Line(10, pane.getHeight() - 10, pane.getWidth() - 10, 10);
-			two.startYProperty().bind(pane.heightProperty().subtract(10));
-			two.endXProperty().bind(pane.widthProperty().subtract(10));
-			pane.getChildren().addAll(one, two);
-			turn += 2;
-			isFilled[tile] = true;
-			try {
-				outputToClient.writeInt(turn);
-				outputToClient.writeInt(tile);
-			}
-			catch(IOException ex) {
-				System.out.println(ex.toString());
-			}
-		}
-		else if(turn == 1) {
-			Pane pane = (Pane) event.getTarget();
-			System.out.println("Tile placed by client: " + tile);
-			lastMove(tile);
-			isFilled[tile] = true;
-			if(isFilled[getTile(event)]) {
-				return;
-			}
-			tile = getTile(event);
-			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
-			one.endXProperty().bind(pane.widthProperty().subtract(10));
-			one.endYProperty().bind(pane.heightProperty().subtract(10));
-			Line two = new Line(10, pane.getHeight() - 10, pane.getWidth() - 10, 10);
-			two.startYProperty().bind(pane.heightProperty().subtract(10));
-			two.endXProperty().bind(pane.widthProperty().subtract(10));
-			pane.getChildren().addAll(one, two);
-			turn++;
-			isFilled[tile] = true;
-			try {
-				outputToClient.writeInt(turn);
-				outputToClient.writeInt(tile);
-			}
-			catch(IOException ex) {
-				System.out.println(ex.toString());
-			}
-		}
-		else {
-			return;
 		}
 	}
 	@FXML 
@@ -251,7 +274,6 @@ public class TicTacToeServerController {
 					tile = inputFromClient.readInt();
 					Platform.runLater(() -> {
 						lastMove(tile);
-						isDraw();
 					});
 				}
 			}
