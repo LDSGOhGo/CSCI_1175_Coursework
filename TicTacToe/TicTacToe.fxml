@@ -29,7 +29,7 @@
             <Button fx:id="connect" layoutX="68.0" layoutY="54.0" mnemonicParsing="false" onMouseClicked="#connectButton" text="Connect" />
             <Label fx:id="draw" layoutY="-1.0" prefHeight="25.0" prefWidth="200.0" text="Game Over! Draw" textAlignment="CENTER" visible="false">
                <font>
-                  <Font size="26.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
          </children></Pane>

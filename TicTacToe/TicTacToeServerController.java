@@ -30,7 +30,7 @@ public class TicTacToeServerController {
 	int turn;
 	int tile;
 	Boolean[] isFilled = {false, false, false, false, false, false, false, false, false};
-	char[][] board = new char[3][3];
+	char[][] board = { {'n', 'n', 'n'}, {'n', 'n', 'n'}, {'n', 'n', 'n'} };
 	
 	protected void isDraw() {
 		for(int i = 0; i < isFilled.length; i++) {
@@ -48,7 +48,64 @@ public class TicTacToeServerController {
 		draw.setVisible(true);
 	}
 	protected void isWon() {
+		boolean xWon = false;
+		boolean oWon = false;
+		for(int i = 0; i < 3; i++) {
+			if(board[i][0] == 'x' && board[i][1] == 'x' && board[i][2] == 'x') {
+				xWon = true;
+			}
+		}
+		for(int i = 0; i < 3; i++) {
+			if(board[0][i] == 'x' && board[1][i] == 'x' && board[2][i] == 'x') {
+				xWon = true;
+			}
+		}
+		if(board[0][0] == 'x' && board[1][1] == 'x' && board[2][2] == 'x') {
+			xWon = true;
+		}
+		if(board[0][2] == 'x' && board[1][1] == 'x' && board[2][0] == 'x') {
+			xWon = true;
+		}
 		
+		for(int i = 0; i < 3; i++) {
+			if(board[i][0] == 'o' && board[i][1] == 'o' && board[i][2] == 'o') {
+				oWon = true;
+			}
+		}
+		for(int i = 0; i < 3; i++) {
+			if(board[0][i] == 'o' && board[1][i] == 'o' && board[2][i] == 'o') {
+				oWon = true;
+			}
+		}
+		if(board[0][0] == 'o' && board[1][1] == 'o' && board[2][2] == 'o') {
+			oWon = true;
+		}
+		if(board[0][2] == 'o' && board[1][1] == 'o' && board[2][0] == 'o') {
+			oWon = true;
+		}
+		
+		if(xWon) {
+			Pane[] panes = {zero, one, two, three, five, six, seven, eight};
+			for(int i = 0; i < panes.length; i++) {
+				panes[i].setVisible(false);
+			}
+			four.getChildren().clear();
+			four.setStyle(null);
+			four.getChildren().add(draw);
+			draw.setText("Game Over! Server Won");
+			draw.setVisible(true);
+		}
+		if(oWon) {
+			Pane[] panes = {zero, one, two, three, five, six, seven, eight};
+			for(int i = 0; i < panes.length; i++) {
+				panes[i].setVisible(false);
+			}
+			four.getChildren().clear();
+			four.setStyle(null);
+			four.getChildren().add(draw);
+			draw.setText("Game Over! Client Won");
+			draw.setVisible(true);
+		}
 	}
 	protected void fillBoard(boolean turn, int tile) {
 		if(turn) {
@@ -205,16 +262,12 @@ public class TicTacToeServerController {
 		circle.setFill(Color.TRANSPARENT);
 		pane.getChildren().addAll(circle);
 		isFilled[tile] = true;
+		fillBoard(false, tile);
+		isWon();
 		isDraw();
 	}
 	@FXML
 	protected void onClick(MouseEvent event) {
-		for(int i = 0; i < isFilled.length; i++) {
-			System.out.print(isFilled[i] + " ");
-		}
-		System.out.println();
-		System.out.println(isFilled[getTile(event)]);
-		System.out.println(getTile(event));
 		if(isFilled[getTile(event)]) {
 			return;
 		}
@@ -231,10 +284,10 @@ public class TicTacToeServerController {
 			two.endXProperty().bind(pane.widthProperty().subtract(10));
 			pane.getChildren().addAll(one, two);
 			isFilled[tile] = true;
+			fillBoard(true, tile);
 			turn += 2;
 		}
 		else {
-			System.out.println(isFilled[getTile(event)]);
 			Pane pane = (Pane) event.getTarget();
 			tile = getTile(event);
 			Line one = new Line(10, 10, pane.getWidth() - 10, pane.getHeight() - 10);
@@ -246,6 +299,8 @@ public class TicTacToeServerController {
 			pane.getChildren().addAll(one, two);
 			isFilled[tile] = true;
 			turn++;
+			fillBoard(true, tile);
+			isWon();
 			isDraw();
 		}
 		try {
