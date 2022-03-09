@@ -31,6 +31,7 @@ public class TicTacToeServerController {
 	int tile;
 	Boolean[] isFilled = {false, false, false, false, false, false, false, false, false};
 	char[][] board = { {'n', 'n', 'n'}, {'n', 'n', 'n'}, {'n', 'n', 'n'} };
+	boolean started = false;
 	
 	protected void isDraw() {
 		for(int i = 0; i < isFilled.length; i++) {
@@ -268,6 +269,9 @@ public class TicTacToeServerController {
 	}
 	@FXML
 	protected void onClick(MouseEvent event) {
+		if(!started) {
+			return;
+		}
 		if(isFilled[getTile(event)]) {
 			return;
 		}
@@ -324,6 +328,7 @@ public class TicTacToeServerController {
 				inputFromClient = new DataInputStream(socket.getInputStream());
 				outputToClient = new DataOutputStream(socket.getOutputStream());
 				turn = 0;
+				started = true;
 				while(true) {
 					turn = inputFromClient.readInt();
 					tile = inputFromClient.readInt();
