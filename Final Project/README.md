@@ -1,7 +1,7 @@
 # Server and Client TicTacToe
 
 ## Synopsis
-This is a 2 player game oof TicTacToe. 2 Players battle against each other in different windows.
+This is a 2 player game of TicTacToe. 2 Players battle against each other in different windows.
 
 ## Motivation
 This project was made with JavaFX to demonstrate networking and advanced java graphics ideas taught in CSCI 1175 Industry Projects
